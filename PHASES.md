@@ -21,7 +21,7 @@ Decisions locked in Phase 0: `TotalTradedStocksResult{Summary, Details}` struct,
 - Derivatives 90-day chunks, `optionchain.go, participants.go`, FII `.xls`, F&O bhav ZIP fallback. Indices `config.go` ~300 lines, `Nifty` prefix vars + `Categories` map.
 - Exit: `TestIndexList`, `TestFuturePriceVolumeData`.
 
-## Phase 4 — mutualfunds + nsdlfpi + cashmarket
+## Phase 4 — mutualfunds + nsdlfpi + cashmarket [DONE]
 - `mutualfunds/amfi.go` Excel/HTML/PDF priority. `nsdlfpi/` types/client/parser/browser (`chromedp`). `cashmarket/` 7 delegates last.
 - Exit: AMFI fetch, `TestFetchLatestBundle`, facade green.
 
