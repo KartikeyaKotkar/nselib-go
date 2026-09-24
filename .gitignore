@@ -22,7 +22,6 @@ nselib.egg-info/
 .idea/
 .vscode/
 .DS_Store
-.github
 docs/
 opencode.json
 plan-review.md
