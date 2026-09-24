@@ -130,15 +130,15 @@ func (c *Client) archiveHTML(tradeDate time.Time) (string, string, error) {
 		return "", "", errors.New("unable to fetch NSDL archive page :: " + strings.Join(errs, " | "))
 	}
 	form := url.Values{
-		"__EVENTTARGET":         {"btnSubmit1"},
-		"__EVENTARGUMENT":       {""},
-		"__VIEWSTATE":           {fields["__VIEWSTATE"]},
-		"__VIEWSTATEGENERATOR":  {fields["__VIEWSTATEGENERATOR"]},
-		"__EVENTVALIDATION":     {fields["__EVENTVALIDATION"]},
-		"txtDate":               {tradeDate.Format(ReportDateLayout)},
-		"hdnDate":               {tradeDate.Format(ReportDateLayout)},
-		"HdnValexceldata":       {""},
-		"hdnFlag":               {""},
+		"__EVENTTARGET":        {"btnSubmit1"},
+		"__EVENTARGUMENT":      {""},
+		"__VIEWSTATE":          {fields["__VIEWSTATE"]},
+		"__VIEWSTATEGENERATOR": {fields["__VIEWSTATEGENERATOR"]},
+		"__EVENTVALIDATION":    {fields["__EVENTVALIDATION"]},
+		"txtDate":              {tradeDate.Format(ReportDateLayout)},
+		"hdnDate":              {tradeDate.Format(ReportDateLayout)},
+		"HdnValexceldata":      {""},
+		"hdnFlag":              {""},
 	}
 	resp, err := c.http.PostForm(c.baseURL+"/"+ArchivePage, form)
 	if err != nil {

@@ -2,7 +2,7 @@ package nselib
 
 // Date format layouts for Go's time.Parse / time.Format.
 const (
-	LayoutDDMMYYYY        = "02-01-2006" // dd-mm-YYYY
+	LayoutDDMMYYYY        = "02-01-2006"  // dd-mm-YYYY
 	LayoutDDMMMYYYY       = "02-Jan-2006" // dd-Mon-YYYY
 	LayoutDDMMYYYYCompact = "02012006"    // ddmmYYYY
 	LayoutDDMMYYCompact   = "020106"      // ddmmyy

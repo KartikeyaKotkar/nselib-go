@@ -63,8 +63,8 @@ func fetchInChunks(maxDays int, from, to time.Time, fetcher func(fromStr, toStr 
 	return result, nil
 }
 
-// PriceVolumeDeliverableData fetches OHLCV + deliverable data for a symbol.
-func PriceVolumeDeliverableData(symbol, fromDate, toDate, period string) (nselib.DataFrame, error) {
+// PriceVolumeAndDeliverablePositionData fetches OHLCV + deliverable data for a symbol.
+func PriceVolumeAndDeliverablePositionData(symbol, fromDate, toDate, period string) (nselib.DataFrame, error) {
 	from, to, err := resolveDateRange(fromDate, toDate, period)
 	if err != nil {
 		return nil, err
@@ -87,8 +87,8 @@ func PriceVolumeData(symbol, fromDate, toDate, period string) (nselib.DataFrame,
 	})
 }
 
-// DeliverableData fetches deliverable position data for a symbol.
-func DeliverableData(symbol, fromDate, toDate, period string) (nselib.DataFrame, error) {
+// DeliverablePositionData fetches deliverable position data for a symbol.
+func DeliverablePositionData(symbol, fromDate, toDate, period string) (nselib.DataFrame, error) {
 	from, to, err := resolveDateRange(fromDate, toDate, period)
 	if err != nil {
 		return nil, err

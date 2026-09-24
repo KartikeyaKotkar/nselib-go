@@ -9,11 +9,11 @@ import (
 // Compile-time delegate signature checks (no network): facade must match
 // the underlying package function shapes.
 var (
-	_ func(string) (nselib.DataFrame, error)   = NSDLFPIInvestmentActivity
-	_ func() (nselib.DataFrame, error)         = NSDLFPILatestInvestmentActivity
-	_ func(string) (nselib.DataFrame, error)   = NSDLFPIDerivativeActivity
-	_ func() (nselib.DataFrame, error)         = NSDLFPILatestDerivativeActivity
-	_ func() (nselib.DataFrame, error)         = AMFIMonthlyReportLinks
+	_ func(string) (nselib.DataFrame, error)            = NSDLFPIInvestmentActivity
+	_ func() (nselib.DataFrame, error)                  = NSDLFPILatestInvestmentActivity
+	_ func(string) (nselib.DataFrame, error)            = NSDLFPIDerivativeActivity
+	_ func() (nselib.DataFrame, error)                  = NSDLFPILatestDerivativeActivity
+	_ func() (nselib.DataFrame, error)                  = AMFIMonthlyReportLinks
 	_ func(string, ...string) (nselib.DataFrame, error) = AMFIMonthlyData
 )
 

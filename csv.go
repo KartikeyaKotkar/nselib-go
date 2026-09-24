@@ -61,7 +61,7 @@ func ParseCSV(r io.Reader, opts ...CSVOption) (DataFrame, error) {
 	reader.FieldsPerRecord = -1
 	records, err := reader.ReadAll()
 	if err != nil {
-		return nil, NewDataNotFoundError("parse CSV: "+err.Error())
+		return nil, NewDataNotFoundError("parse CSV: " + err.Error())
 	}
 	for i := 0; i < o.skipRows && len(records) > 0; i++ {
 		records = records[1:]

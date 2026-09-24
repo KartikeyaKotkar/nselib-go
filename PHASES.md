@@ -25,5 +25,5 @@ Decisions locked in Phase 0: `TotalTradedStocksResult{Summary, Details}` struct,
 - `mutualfunds/amfi.go` Excel/HTML/PDF priority. `nsdlfpi/` types/client/parser/browser (`chromedp`). `cashmarket/` 7 delegates last.
 - Exit: AMFI fetch, `TestFetchLatestBundle`, facade green.
 
-## Phase 5 — Parity + release
+## Phase 5 — Parity + release [DONE]
 - `go vet`, `golangci-lint`, `go doc`, Python vs Go shape compare, `PriceVolumeData SBIN 1Y` timing.

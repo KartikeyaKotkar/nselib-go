@@ -22,27 +22,40 @@ type NSEError struct {
 	Message string
 }
 
+// Error returns the formatted "[CODE] message" string.
 func (e *NSEError) Error() string {
 	return fmt.Sprintf("[%s] %s", e.Code, e.Message)
 }
 
-// Convenience constructors for each error type.
+// NewAPIError creates an API error.
 func NewAPIError(msg string) *NSEError { return &NSEError{Code: ErrCodeAPI, Message: msg} }
+
+// NewDataNotFoundError creates a data-not-found error.
 func NewDataNotFoundError(msg string) *NSEError {
 	return &NSEError{Code: ErrCodeDataNotFound, Message: msg}
 }
+
+// NewIndexDataNotFoundError creates an index-data-not-found error (API parity).
 func NewIndexDataNotFoundError(msg string) *NSEError {
 	return &NSEError{Code: ErrCodeIndexDataNotFound, Message: msg}
 }
+
+// NewCalendarNotFoundError creates a calendar-not-found error.
 func NewCalendarNotFoundError(msg string) *NSEError {
 	return &NSEError{Code: ErrCodeCalendarNotFound, Message: msg}
 }
+
+// NewInvalidIndexCategoryError creates an invalid-index-category error.
 func NewInvalidIndexCategoryError(msg string) *NSEError {
 	return &NSEError{Code: ErrCodeInvalidIndexCategory, Message: msg}
 }
+
+// NewInvalidIndexError creates an invalid-index error.
 func NewInvalidIndexError(msg string) *NSEError {
 	return &NSEError{Code: ErrCodeInvalidIndex, Message: msg}
 }
+
+// NewDerivativeInstrumentNotFoundError creates a derivative-instrument error.
 func NewDerivativeInstrumentNotFoundError(msg string) *NSEError {
 	return &NSEError{Code: ErrCodeDerivativeInstrumentNotFound, Message: msg}
 }

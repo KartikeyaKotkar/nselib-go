@@ -64,7 +64,7 @@ func parseOptionChain(raw map[string]interface{}, symbol, expiryDDMonYYYY, oiMod
 			"CALLS_Bid_Qty": num(ce, "buyQuantity1"), "CALLS_Bid_Price": num(ce, "buyPrice1"),
 			"CALLS_Ask_Price": num(ce, "sellPrice1"), "CALLS_Ask_Qty": num(ce, "sellQuantity1"),
 			"Strike_Price": strike,
-			"PUTS_OI": num(pe, "openInterest"), "PUTS_Chng_in_OI": num(pe, "changeinOpenInterest"),
+			"PUTS_OI":      num(pe, "openInterest"), "PUTS_Chng_in_OI": num(pe, "changeinOpenInterest"),
 			"PUTS_Volume": num(pe, "totalTradedVolume"), "PUTS_IV": num(pe, "impliedVolatility"),
 			"PUTS_LTP": num(pe, "lastPrice"), "PUTS_Net_Chng": num(pe, "change"),
 			"PUTS_Bid_Qty": num(pe, "buyQuantity1"), "PUTS_Bid_Price": num(pe, "buyPrice1"),

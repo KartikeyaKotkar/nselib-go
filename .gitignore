@@ -24,3 +24,6 @@ nselib.egg-info/
 .DS_Store
 .github
 docs/
+opencode.json
+plan-review.md
+python-to-go-conversion-plan.md

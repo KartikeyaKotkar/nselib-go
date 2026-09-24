@@ -53,6 +53,10 @@ func findBrowserExecutable() string {
 // Available reports whether a browser executable was found.
 func (b *Browser) Available() bool { return b != nil && b.executable != "" }
 
+// Close releases browser resources. Contexts are per-call and self-cleaning,
+// so this is a no-op kept for parity with Python's NSDLProductionBrowser.close.
+func (b *Browser) Close() {}
+
 func (b *Browser) run(tasks ...chromedp.Action) error {
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		chromedp.ExecPath(b.executable),
