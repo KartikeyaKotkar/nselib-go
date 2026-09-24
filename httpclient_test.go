@@ -62,3 +62,27 @@ func TestNSEClientAPIError(t *testing.T) {
 		t.Error("want error on 500")
 	}
 }
+
+func TestPrimeOncePerOrigin(t *testing.T) {
+	var originHits int
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		originHits++
+		http.SetCookie(w, &http.Cookie{Name: "nse", Value: "1"})
+		w.WriteHeader(200)
+	}))
+	defer origin.Close()
+	data := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("A,B\n1,2\n"))
+	}))
+	defer data.Close()
+
+	c := NewNSEClient()
+	for i := 0; i < 3; i++ {
+		if _, err := c.FetchCSV(data.URL, origin.URL); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if originHits != 1 {
+		t.Errorf("want 1 priming hit for 3 fetches, got %d", originHits)
+	}
+}

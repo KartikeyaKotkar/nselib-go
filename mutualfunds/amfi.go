@@ -10,6 +10,8 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/KartikeyaKotkar/nselib-go"
@@ -528,14 +530,34 @@ func AMFIMonthlyHistoricalData(fromMonth, toMonth string, fileTypePriority []str
 		}
 	}
 	var out nselib.DataFrame
-	for _, m := range months {
-		frame, err := AMFIMonthlyData(m.Format("Jan-2006"), priority...)
-		if err != nil {
-			if strict {
-				return nil, err
+	frames := make([]nselib.DataFrame, len(months))
+	const maxParallel = 3
+	sem := make(chan struct{}, maxParallel)
+	var wg sync.WaitGroup
+	var firstErr atomic.Value
+	for i, m := range months {
+		wg.Add(1)
+		go func(i int, m time.Time) {
+			defer wg.Done()
+			sem <- struct{}{}
+			defer func() { <-sem }()
+			frame, err := AMFIMonthlyData(m.Format("Jan-2006"), priority...)
+			if err != nil {
+				if strict {
+					if firstErr.Load() == nil {
+						firstErr.Store(err)
+					}
+				}
+				return
 			}
-			continue
-		}
+			frames[i] = frame
+		}(i, m)
+	}
+	wg.Wait()
+	if err, ok := firstErr.Load().(error); ok && err != nil {
+		return nil, err
+	}
+	for _, frame := range frames {
 		out = append(out, frame...)
 	}
 	if out == nil {

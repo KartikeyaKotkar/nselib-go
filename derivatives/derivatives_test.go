@@ -1,6 +1,7 @@
 package derivatives
 
 import (
+	"sync"
 	"testing"
 	"time"
 
@@ -11,8 +12,11 @@ func TestFetchInChunks90(t *testing.T) {
 	from := time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)
 	to := time.Date(2024, 4, 5, 0, 0, 0, 0, time.UTC) // 95 days -> 2 chunks of 90
 	var calls [][2]string
+	var mu sync.Mutex
 	df, err := fetchInChunks(90, from, to, func(fs, ts string) (nselib.DataFrame, error) {
+		mu.Lock()
 		calls = append(calls, [2]string{fs, ts})
+		mu.Unlock()
 		return nselib.DataFrame{{"f": fs}}, nil
 	})
 	if err != nil {

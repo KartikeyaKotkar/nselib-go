@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/KartikeyaKotkar/nselib-go"
@@ -82,8 +84,12 @@ func FinancialResultsForEquity(fromDate, toDate, period string, foSec bool, finP
 	if err != nil {
 		return nil, err
 	}
-	var out nselib.DataFrame
-	for _, row := range master {
+	var out = make(nselib.DataFrame, len(master))
+	const maxParallel = 4
+	sem := make(chan struct{}, maxParallel)
+	var wg sync.WaitGroup
+	var firstErr atomic.Value
+	for i, row := range master {
 		xbrlURL, _ := row["xbrl"].(string)
 		if xbrlURL == "" {
 			// fall back to case-insensitive lookup
@@ -97,28 +103,56 @@ func FinancialResultsForEquity(fromDate, toDate, period string, foSec bool, finP
 		if xbrlURL == "" {
 			continue
 		}
-		req, err := http.NewRequest("GET", xbrlURL, nil)
-		if err != nil {
-			return nil, err
-		}
-		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
-		req.Header.Set("Referer", "https://www.nseindia.com/")
-		resp, err := xbrlHTTP.Do(req)
-		if err != nil {
-			return nil, nselib.NewAPIError(fmt.Sprintf("fetch XBRL: %v", err))
-		}
-		body, err := io.ReadAll(resp.Body)
-		_ = resp.Body.Close()
-		if err != nil {
-			return nil, err
-		}
-		if resp.StatusCode != 200 {
-			return nil, nselib.NewAPIError(fmt.Sprintf("fetch XBRL: status %d", resp.StatusCode))
-		}
-		out = append(out, extractXBRLValues(body, xbrlKeys))
+		wg.Add(1)
+		go func(i int, url string) {
+			defer wg.Done()
+			sem <- struct{}{}
+			defer func() { <-sem }()
+			rec, err := fetchXBRL(url)
+			if err != nil {
+				if firstErr.Load() == nil {
+					firstErr.Store(err)
+				}
+				return
+			}
+			out[i] = rec
+		}(i, xbrlURL)
 	}
-	if out == nil {
-		out = nselib.DataFrame{}
+	wg.Wait()
+	if err, ok := firstErr.Load().(error); ok && err != nil {
+		return nil, err
 	}
-	return out, nil
+	var result nselib.DataFrame
+	for _, r := range out {
+		if r != nil {
+			result = append(result, r)
+		}
+	}
+	if result == nil {
+		result = nselib.DataFrame{}
+	}
+	return result, nil
+}
+
+// fetchXBRL downloads and parses one XBRL filing.
+func fetchXBRL(xbrlURL string) (nselib.Record, error) {
+	req, err := http.NewRequest("GET", xbrlURL, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+	req.Header.Set("Referer", "https://www.nseindia.com/")
+	resp, err := xbrlHTTP.Do(req)
+	if err != nil {
+		return nil, nselib.NewAPIError(fmt.Sprintf("fetch XBRL: %v", err))
+	}
+	body, err := io.ReadAll(resp.Body)
+	_ = resp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		return nil, nselib.NewAPIError(fmt.Sprintf("fetch XBRL: status %d", resp.StatusCode))
+	}
+	return extractXBRLValues(body, xbrlKeys), nil
 }

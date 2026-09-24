@@ -2,6 +2,7 @@
 package capitalmarket
 
 import (
+	"sync"
 	"time"
 
 	"github.com/KartikeyaKotkar/nselib-go"
@@ -41,26 +42,52 @@ func resolveDateRange(fromDate, toDate, period string) (time.Time, time.Time, er
 }
 
 // fetchInChunks breaks a date range into maxDays windows and concatenates results.
+// Windows fetch concurrently (bounded) and assemble in chronological order.
 // Mirrors the Python 365-day while loop used by all history functions.
 func fetchInChunks(maxDays int, from, to time.Time, fetcher func(fromStr, toStr string) (nselib.DataFrame, error)) (nselib.DataFrame, error) {
-	var result nselib.DataFrame
-	cur := from
-	for !cur.After(to) {
+	type window struct{ from, to time.Time }
+	var windows []window
+	for cur := from; !cur.After(to); {
 		end := cur.AddDate(0, 0, maxDays-1)
 		if end.After(to) {
 			end = to
 		}
-		chunk, err := fetcher(cur.Format(nselib.LayoutDDMMYYYY), end.Format(nselib.LayoutDDMMYYYY))
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, chunk...)
+		windows = append(windows, window{cur, end})
 		cur = end.AddDate(0, 0, 1)
 	}
-	if result == nil {
-		result = nselib.DataFrame{}
+	const maxParallel = 4
+	sem := make(chan struct{}, maxParallel)
+	type result struct {
+		i   int
+		df  nselib.DataFrame
+		err error
 	}
-	return result, nil
+	out := make([]result, len(windows))
+	var wg sync.WaitGroup
+	for i, w := range windows {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			sem <- struct{}{}
+			defer func() { <-sem }()
+			df, err := fetcher(
+				w.from.Format(nselib.LayoutDDMMYYYY),
+				w.to.Format(nselib.LayoutDDMMYYYY))
+			out[i] = result{i, df, err}
+		}()
+	}
+	wg.Wait()
+	var resultDF nselib.DataFrame
+	for _, r := range out {
+		if r.err != nil {
+			return nil, r.err
+		}
+		resultDF = append(resultDF, r.df...)
+	}
+	if resultDF == nil {
+		resultDF = nselib.DataFrame{}
+	}
+	return resultDF, nil
 }
 
 // PriceVolumeAndDeliverablePositionData fetches OHLCV + deliverable data for a symbol.

@@ -3,7 +3,9 @@ package capitalmarket
 import (
 	"net/http"
 	"net/http/httptest"
+	"sort"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -14,8 +16,11 @@ func TestFetchInChunksSplits(t *testing.T) {
 	from := time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)
 	to := time.Date(2024, 1, 10, 0, 0, 0, 0, time.UTC)
 	var calls [][2]string
+	var mu sync.Mutex
 	df, err := fetchInChunks(3, from, to, func(fs, ts string) (nselib.DataFrame, error) {
+		mu.Lock()
 		calls = append(calls, [2]string{fs, ts})
+		mu.Unlock()
 		return nselib.DataFrame{{"f": fs, "t": ts}}, nil
 	})
 	if err != nil {
@@ -24,8 +29,15 @@ func TestFetchInChunksSplits(t *testing.T) {
 	if len(calls) != 4 {
 		t.Fatalf("want 4 chunks got %d: %v", len(calls), calls)
 	}
+	sort.Slice(calls, func(i, j int) bool { return calls[i][0] < calls[j][0] })
 	if len(df) != 4 {
 		t.Fatalf("want 4 rows got %d", len(df))
+	}
+	// assembled rows stay chronological regardless of fetch order
+	for i := 1; i < len(df); i++ {
+		if df[i-1]["f"].(string) > df[i]["f"].(string) {
+			t.Fatalf("rows out of order: %v", df)
+		}
 	}
 	if calls[0][0] != "01-01-2024" || calls[3][1] != "10-01-2024" {
 		t.Errorf("bad edges: %v", calls)

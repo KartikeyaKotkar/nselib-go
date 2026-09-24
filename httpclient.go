@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/cookiejar"
+	"sync"
 	"time"
 )
 
@@ -35,9 +36,14 @@ var (
 const DefaultOriginURL = "https://www.nseindia.com"
 
 // NSEClient manages HTTP sessions with cookie priming for NSE India APIs.
+// Cookies prime once per origin and re-prime only on 403, unlike Python
+// which performs a priming request before every call.
 type NSEClient struct {
 	client *http.Client
 	logger *slog.Logger
+
+	mu     sync.Mutex
+	primed map[string]bool
 }
 
 // ClientOption configures NSEClient.
@@ -59,6 +65,7 @@ func NewNSEClient(opts ...ClientOption) *NSEClient {
 	c := &NSEClient{
 		client: &http.Client{Jar: jar, Timeout: 30 * time.Second},
 		logger: slog.Default(),
+		primed: map[string]bool{},
 	}
 	for _, o := range opts {
 		o(c)
@@ -70,6 +77,34 @@ func applyHeaders(req *http.Request, h map[string]string) {
 	for k, v := range h {
 		req.Header.Set(k, v)
 	}
+}
+
+// ensurePrimed seeds cookies for originURL once; concurrent callers share it.
+func (c *NSEClient) ensurePrimed(originURL string) error {
+	c.mu.Lock()
+	if c.primed[originURL] {
+		c.mu.Unlock()
+		return nil
+	}
+	c.mu.Unlock()
+	if err := c.primeCookies(originURL); err != nil {
+		return err
+	}
+	c.mu.Lock()
+	c.primed[originURL] = true
+	c.mu.Unlock()
+	return nil
+}
+
+// reprime forces a fresh cookie prime after expiry.
+func (c *NSEClient) reprime(originURL string) error {
+	if err := c.primeCookies(originURL); err != nil {
+		return err
+	}
+	c.mu.Lock()
+	c.primed[originURL] = true
+	c.mu.Unlock()
+	return nil
 }
 
 // primeCookies performs GET originURL to seed the cookie jar.
@@ -88,14 +123,15 @@ func (c *NSEClient) primeCookies(originURL string) error {
 	return nil
 }
 
-// Fetch primes cookies from originURL, then fetches target URL.
+// Fetch ensures primed cookies, then fetches target URL.
 // On 403 it re-primes once and retries (cookie expiry recovery).
-// Equivalent to Python's nse_urlfetch().
+// Equivalent to Python's nse_urlfetch(), but primes once per origin
+// instead of before every call.
 func (c *NSEClient) Fetch(url, originURL string) (*http.Response, error) {
 	if originURL == "" {
 		originURL = DefaultOriginURL
 	}
-	if err := c.primeCookies(originURL); err != nil {
+	if err := c.ensurePrimed(originURL); err != nil {
 		return nil, fmt.Errorf("prime cookies: %w", err)
 	}
 	doFetch := func() (*http.Response, error) {
@@ -112,7 +148,7 @@ func (c *NSEClient) Fetch(url, originURL string) (*http.Response, error) {
 	}
 	if resp.StatusCode == http.StatusForbidden {
 		_ = resp.Body.Close()
-		if err := c.primeCookies(originURL); err != nil {
+		if err := c.reprime(originURL); err != nil {
 			return nil, fmt.Errorf("re-prime cookies: %w", err)
 		}
 		resp, err = doFetch()
