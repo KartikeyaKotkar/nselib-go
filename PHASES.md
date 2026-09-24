@@ -17,7 +17,7 @@ Decisions locked in Phase 0: `TotalTradedStocksResult{Summary, Details}` struct,
 - Generic `fetchInChunks(365)` proven here.
 - Exit: `TestEquityList`, `TestPriceVolumeData` parity.
 
-## Phase 3 — derivatives + indices
+## Phase 3 — derivatives + indices [DONE]
 - Derivatives 90-day chunks, `optionchain.go, participants.go`, FII `.xls`, F&O bhav ZIP fallback. Indices `config.go` ~300 lines, `Nifty` prefix vars + `Categories` map.
 - Exit: `TestIndexList`, `TestFuturePriceVolumeData`.
 
