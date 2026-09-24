@@ -12,7 +12,7 @@ Decisions locked in Phase 0: `TotalTradedStocksResult{Summary, Details}` struct,
 - Tests: `errors_test.go, csv_test.go, dateutil_test.go, httpclient_test.go`.
 - Exit: `go build ./...`, `go vet ./...`, `go test ./...` green.
 
-## Phase 2 — capitalmarket + debt
+## Phase 2 — capitalmarket + debt [DONE]
 - `capitalmarket/capitalmarket.go, fetchers.go, bhav.go` (5 funcs incl `bhav_copy_indices`), `reports.go, live.go, financials.go, turnover.go` (`extrame/xls`), `growth.go`. `debt/debt.go` bundled.
 - Generic `fetchInChunks(365)` proven here.
 - Exit: `TestEquityList`, `TestPriceVolumeData` parity.
