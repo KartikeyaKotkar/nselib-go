@@ -13,25 +13,25 @@
 </p>
 
 <p align="center">
-  Full-API port of the Python <a href="https://github.com/RuchiTanmay/nselib">nselib</a> library —
+  Full-API port of the Python <a href="https://github.com/RuchiTanmay/nselib">nselib</a> library -
   strong typing (<code>DataFrame</code> = <code>[]Record</code>), a shared cookie-primed HTTP client,
   and concurrent fetching throughout.
 </p>
 
 ---
 
-## ✨ Features
+## Features
 
-- **Capital Market** — Price volume data, deliverable positions, bhav copies, bulk/block deals, short selling, VaR margins, PE ratios, 52-week highs/lows, and more
-- **Cash Market** — NSDL FPI investment and derivative activity plus AMFI monthly archive reports
-- **Derivatives** — Futures & options price volume data, bhav copies, participant-wise OI & volume, live option chains, FII statistics, ban period securities
-- **Indices** — Index constituent lists, live index performances across Broad Market, Sectoral, Thematic, and Strategy categories
-- **Debt** — Securities available for trading
-- **Corporate Filings** — Financial results, corporate actions, event calendars
-- **Market Activity** — Top gainers/losers, most active equities, total traded stocks, FII/DII activity
-- **Utilities** — Trading holiday calendar, India VIX historical data
+- **Capital Market** - Price volume data, deliverable positions, bhav copies, bulk/block deals, short selling, VaR margins, PE ratios, 52-week highs/lows, and more
+- **Cash Market** - NSDL FPI investment and derivative activity plus AMFI monthly archive reports
+- **Derivatives** - Futures & options price volume data, bhav copies, participant-wise OI & volume, live option chains, FII statistics, ban period securities
+- **Indices** - Index constituent lists, live index performances across Broad Market, Sectoral, Thematic, and Strategy categories
+- **Debt** - Securities available for trading
+- **Corporate Filings** - Financial results, corporate actions, event calendars
+- **Market Activity** - Top gainers/losers, most active equities, total traded stocks, FII/DII activity
+- **Utilities** - Trading holiday calendar, India VIX historical data
 
-## 📦 Installation
+## Installation
 
 Requires Go 1.21+ (recent toolchain recommended; dependencies resolve it automatically).
 
@@ -39,7 +39,7 @@ Requires Go 1.21+ (recent toolchain recommended; dependencies resolve it automat
 go get github.com/KartikeyaKotkar/nselib-go
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ```go
 package main
@@ -71,7 +71,7 @@ func main() {
 
 Rows are `map[string]interface{}` (`nselib.Record`); a result set is `nselib.DataFrame` (`[]Record`).
 
-## 📖 API Reference
+## API Reference
 
 ### Date Parameters
 
@@ -104,24 +104,24 @@ import "github.com/KartikeyaKotkar/nselib-go/capitalmarket"
 | `BhavCopyEquities()` | CM-UDiFF bhav copy | `tradeDate` |
 | `BhavCopyIndices()` | Index closing bhav copy | `tradeDate` |
 | `BhavCopySME()` / `SMEBhavCopy()` | SME bhav copy | `tradeDate` |
-| `EquityList()` | All listed equities | — |
-| `FNOEquityList()` | F&O equity list with lot sizes | — |
-| `FNOIndexList()` | F&O index list with lot sizes | — |
-| `Nifty50EquityList()` | Nifty 50 constituents | — |
-| `NiftyNext50EquityList()` | Nifty Next 50 constituents | — |
-| `NiftyMidcap150EquityList()` | Nifty Midcap 150 constituents | — |
-| `NiftySmallcap250EquityList()` | Nifty Smallcap 250 constituents | — |
+| `EquityList()` | All listed equities | - |
+| `FNOEquityList()` | F&O equity list with lot sizes | - |
+| `FNOIndexList()` | F&O index list with lot sizes | - |
+| `Nifty50EquityList()` | Nifty 50 constituents | - |
+| `NiftyNext50EquityList()` | Nifty Next 50 constituents | - |
+| `NiftyMidcap150EquityList()` | Nifty Midcap 150 constituents | - |
+| `NiftySmallcap250EquityList()` | Nifty Smallcap 250 constituents | - |
 | `IndiaVIXData()` | India VIX historical data | dates |
 | `IndexData()` | Historical index OHLC data | `index`, dates |
-| `MarketWatchAllIndices()` | Live snapshot of all indices | — |
+| `MarketWatchAllIndices()` | Live snapshot of all indices | - |
 | `DailyVolatility()` | CM daily volatility report | `tradeDate` |
-| `FIIDIITradingActivity()` | FII/DII buy-sell activity | — |
-| `VarBeginDay()` | VaR — begin of day | `tradeDate` |
-| `Var1stIntraDay()` | VaR — 1st intraday | `tradeDate` |
-| `Var2ndIntraDay()` | VaR — 2nd intraday | `tradeDate` |
-| `Var3rdIntraDay()` | VaR — 3rd intraday | `tradeDate` |
-| `Var4thIntraDay()` | VaR — 4th intraday | `tradeDate` |
-| `VarEndOfDay()` | VaR — end of day | `tradeDate` |
+| `FIIDIITradingActivity()` | FII/DII buy-sell activity | - |
+| `VarBeginDay()` | VaR - begin of day | `tradeDate` |
+| `Var1stIntraDay()` | VaR - 1st intraday | `tradeDate` |
+| `Var2ndIntraDay()` | VaR - 2nd intraday | `tradeDate` |
+| `Var3rdIntraDay()` | VaR - 3rd intraday | `tradeDate` |
+| `Var4thIntraDay()` | VaR - 4th intraday | `tradeDate` |
+| `VarEndOfDay()` | VaR - end of day | `tradeDate` |
 | `SMEBandComplete()` | SME band complete data | `tradeDate` |
 | `Week52HighLowReport()` | 52-week high/low report | `tradeDate` |
 | `FinancialResultsForEquity()` | Quarterly/annual financials | dates, `foSec`, `finPeriod` |
@@ -131,9 +131,8 @@ import "github.com/KartikeyaKotkar/nselib-go/capitalmarket"
 | `EventCalendarForEquity()` | Event calendar | dates, `fnoOnly` |
 | `TopGainersOrLosers()` | Top gainers or losers | `toGet` (`"gainers"` / `"loosers"`) |
 | `MostActiveEquities()` | Most active by value/volume | `fetchBy` (`"value"` / `"volume"`) |
-| `TotalTradedStocks()` | Traded stocks summary + details | — (returns `TotalTradedStocksResult`) |
+| `TotalTradedStocks()` | Traded stocks summary + details | - (returns `TotalTradedStocksResult`) |
 | `CategoryTurnoverCash()` | Category-wise turnover data | `tradeDate` |
-| `BusinessGrowthCMSegment()` | Business growth, CM segment | `dataType`, `fromYear`, `toYear`, `month`, `year` |
 | `BusinessGrowthCMSegment()` | Business growth, CM segment | `dataType`, `fromYear`, `toYear`, `month`, `year` |
 
 **Examples:**
@@ -171,12 +170,12 @@ import "github.com/KartikeyaKotkar/nselib-go/derivatives"
 | `ParticipantWiseOpenInterest()` | OI by participant category | `tradeDate` |
 | `ParticipantWiseTradingVolume()` | Volume by participant category | `tradeDate` |
 | `DailyVolatility()` | F&O daily volatility report | `tradeDate` |
-| `ExpiryDatesFuture()` | Upcoming futures expiry dates | — |
-| `ExpiryDatesOptionIndex()` | Upcoming options expiry dates per index | — |
+| `ExpiryDatesFuture()` | Upcoming futures expiry dates | - |
+| `ExpiryDatesOptionIndex()` | Upcoming options expiry dates per index | - |
 | `NSELiveOptionChain()` | Live option chain | `symbol`, `expiryDate` ("" for all), `oiMode` (`"full"`/`"compact"`) |
 | `FIIDerivativesStatistics()` | FII derivatives stats | `tradeDate` |
 | `FNOSecurityInBanPeriod()` | Securities in F&O ban | `tradeDate` |
-| `LiveMostActiveUnderlying()` | Most active underlyings | — |
+| `LiveMostActiveUnderlying()` | Most active underlyings | - |
 | `CategoryTurnoverFO()` | Category-wise turnover, F&O | `tradeDate` |
 | `BusinessGrowthFOSegment()` | Business growth, F&O segment | `dataType`, `fromYear`, `toYear`, `month`, `year` |
 
@@ -218,10 +217,10 @@ Pure facade over `mutualfunds` and `nsdlfpi`.
 | Function | Description | Key Parameters |
 |---|---|---|
 | `NSDLFPIInvestmentActivity()` | NSDL FPI investment activity for a reporting date | `tradeDate` |
-| `NSDLFPILatestInvestmentActivity()` | Latest NSDL FPI investment activity | — |
+| `NSDLFPILatestInvestmentActivity()` | Latest NSDL FPI investment activity | - |
 | `NSDLFPIDerivativeActivity()` | NSDL FPI derivative activity for a reporting date | `tradeDate` |
-| `NSDLFPILatestDerivativeActivity()` | Latest NSDL FPI derivative activity | — |
-| `AMFIMonthlyReportLinks()` | List AMFI monthly archive links | — |
+| `NSDLFPILatestDerivativeActivity()` | Latest NSDL FPI derivative activity | - |
+| `AMFIMonthlyReportLinks()` | List AMFI monthly archive links | - |
 | `AMFIMonthlyData()` | Parse one AMFI monthly report | `reportMonth`, `fileTypePriority...` |
 | `AMFIMonthlyHistoricalData()` | Parse AMFI monthly reports across a range | `fromMonth`, `toMonth`, `fileTypePriority`, `includeAllVariants`, `strict` |
 
@@ -254,7 +253,7 @@ import "github.com/KartikeyaKotkar/nselib-go/indices"
 | `IndexList()` | Available indices by category | `indexCategory` |
 | `ConstituentStockList()` | Stocks in a given index | `indexCategory`, `indexName` |
 | `FactsheetURL()` | Factsheet PDF URL for an index | `indexCategory`, `indexName` |
-| `LiveIndexPerformances()` | Live performance of all indices | — |
+| `LiveIndexPerformances()` | Live performance of all indices | - |
 
 **Index Categories:** `BroadMarketIndices`, `SectoralIndices`, `ThematicIndices`, `StrategyIndices` (107 indices total)
 
@@ -312,7 +311,7 @@ df, _ := nselib.TradingHolidayCalendar()
 
 ---
 
-## 🐞 Logging & Debugging
+## Logging & Debugging
 
 The library is silent by default. Enable structured console logs via `log/slog`:
 
@@ -330,20 +329,20 @@ nselib.EnableLogging(slog.LevelDebug)
 df, _ := capitalmarket.PriceVolumeData("SBIN", "", "", "1W")
 ```
 
-## ⚡ Performance
+## Performance
 
 Cookies prime once per origin (Python primes before every call) and history windows, XBRL filings,
 AMFI months, and index expiries fetch concurrently with bounded parallelism. Measured on
 NIFTY OPTIDX CE 1Y (208,906 rows): Go 7.8s vs Python 20.9s.
 
-## ⚠️ Notes
+## Notes
 
 - `nsdlfpi` browser automation needs a Chrome/Chromium executable; without one it uses the plain-HTTP fallback.
 - AMFI PDF parsing is text-only (no `pdfplumber`-style table extraction); Excel/HTML reports keep full structure.
 - Legacy `.xls` files parse via `github.com/extrame/xls`; `.xlsx` via `excelize`.
 - NSE decides who it serves; some regions see 403s on certain endpoints. The client re-primes and surfaces typed `NSEError` values.
 
-## 🛠️ Development
+## Development
 
 ```bash
 go build ./...
@@ -351,7 +350,7 @@ go vet ./...
 go test ./... -race
 ```
 
-## 🤝 How to Contribute
+## How to Contribute
 
 ### Report Issues & Suggest Features
 
@@ -370,6 +369,6 @@ Found a bug or have a feature request? Open an issue on the [GitHub Issues page]
 - **Go port:** [KartikeyaKotkar/nselib-go](https://github.com/KartikeyaKotkar/nselib-go)
 - **Original Python library:** [RuchiTanmay/nselib](https://github.com/RuchiTanmay/nselib) by [Ruchi Tanmay](https://www.linkedin.com/in/ruchi-tanmay-61848219)
 
-## 📄 License
+## License
 
-This project is licensed under the Apache License 2.0 — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
