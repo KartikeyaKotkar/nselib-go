@@ -1,4 +1,5 @@
-// Code generated from nselib/indices/nse_config.py. DO NOT EDIT.
+// Code generated from upstream nselib/indices/nse_config.py. DO NOT EDIT.
+// Regen source: https://github.com/RuchiTanmay/nselib/blob/main/nselib/indices/nse_config.py
 package indices
 
 // IndexCategory mirrors one NSE index category with its URLs.
